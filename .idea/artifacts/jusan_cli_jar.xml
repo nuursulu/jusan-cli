@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="jusan-cli:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/jusan_cli_jar</output-path>
+    <root id="archive" name="jusan-cli.jar">
+      <element id="module-output" name="jusan-cli" />
+    </root>
+  </artifact>
+</component>
