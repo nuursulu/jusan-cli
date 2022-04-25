@@ -1,5 +1,7 @@
 package com.company;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class MyFile {
@@ -158,8 +160,31 @@ public class MyFile {
         }
     }
     // создает копию `path` в директорию `/tmp/${date}.backup` где, date - это дата в формате `dd-mm-yyyy`. `path` может быть директорией или файлом. При директории, копируется весь контент. - bc
-    public static void createBackup(String path) {
-        
+    public static void createBackup(String path) throws IOException  {
+        File folder = new File(path);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-mm-yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        String backPath = "/tmp/" + dtf.format(now) + ".backup";
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+           if(folder.isFile()) {
+                is = new FileInputStream(path);
+                os = new FileOutputStream(backPath);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
+                }
+            }
+            if(folder.isDirectory()){
+
+            }
+
+        } finally {
+            is.close();
+            os.close();
+        }
     }
     // выводит самое длинное слово в файле - greplong
     public static void printLongestWord(String path) {
@@ -187,7 +212,7 @@ public class MyFile {
         System.exit(0);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("MyFS 1.0 команды:\n" +
                 "ls <path>               выводит список всех файлов и директорий для `path`\n" +
                 "ls_py <path>            выводит список файлов с расширением `.py` в `path`\n" +
@@ -216,6 +241,7 @@ public class MyFile {
                 if (line.contains("setmod")) setPermissions(subPath[1], subPath[2]);
                 if (line.contains("cat")) printContent(subPath[1]);
                 if (line.contains("append")) appendFooter(subPath[1]);
+                if (line.contains("bc")) createBackup(subPath[1]);
                 if (line.contains("help")) help();
                 if (line.contains("exit")) exit();
             }
